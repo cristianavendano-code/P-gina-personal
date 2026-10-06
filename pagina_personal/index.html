@@ -1,159 +1,485 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alondra Iridany Saucedo Jiménez</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-   :root {
-  --lila-suave: #efe6fb;
-  --lila: #c9b1f0;
-  --lila-oscuro: #7a4fb5;
-  --rosa: #ffc2dd;
-  --rosa-fuerte: #e6559b;
-  --crema: #fff8fc;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osler René Castillo Estrada - Glitch & Rain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+        }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+        #rainCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
 
-html, body { min-height: 100%; }
+        .glitch-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: transparent;
+            z-index: 5;
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
 
-body {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  overflow-x: hidden;
-  font-family: "Quicksand", "Trebuchet MS", sans-serif;
-  color: var(--lila-oscuro);
-  background: linear-gradient(140deg, var(--lila-suave) 0%, #f7d9ea 55%, var(--rosa) 100%);
-}
+        /* Soporte / Cadenas superiores del letrero */
+        .signboard-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
 
-/* Pétalos decorativos */
-.petalo {
-  position: fixed;
-  border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
-  filter: blur(2px);
-  opacity: 0.55;
-  z-index: 0;
-}
-.petalo-1 { width: 320px; height: 320px; top: -90px; left: -80px; background: var(--lila); }
-.petalo-2 { width: 260px; height: 260px; bottom: -70px; right: -60px; background: var(--rosa); }
-.petalo-3 { width: 150px; height: 150px; bottom: 18%; left: 8%; background: #e3d0fa; }
+        .signboard-mounts {
+            display: flex;
+            justify-content: space-between;
+            width: 70%;
+            height: 25px;
+            position: absolute;
+            top: -25px;
+        }
 
-/* Tarjeta central */
-.tarjeta {
-  position: relative;
-  z-index: 1;
-  width: min(100%, 640px);
-  padding: 64px 40px 56px;
-  text-align: center;
-  background: rgba(255, 248, 252, 0.72);
-  border: 2px solid #fff;
-  border-radius: 200px 200px 48px 48px;
-  box-shadow: 0 24px 60px rgba(122, 79, 181, 0.22);
-  backdrop-filter: blur(6px);
-}
+        .mount-chain {
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, #444, #888);
+            box-shadow: 0 0 4px rgba(0, 255, 255, 0.3);
+        }
 
-.saludo {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--rosa-fuerte);
-  letter-spacing: 0.04em;
-  margin-bottom: 4px;
-}
+        /* Estilo Avanzado de Letrero Neón / Industrial */
+        .signboard {
+            position: relative;
+            padding: 2.5rem 3.5rem;
+            background: linear-gradient(135deg, rgba(12, 12, 16, 0.9), rgba(5, 5, 8, 0.95));
+            border: 2px solid rgba(0, 255, 255, 0.6);
+            border-radius: 6px;
+            box-shadow: 
+                0 0 35px rgba(0, 255, 255, 0.25),
+                0 0 10px rgba(255, 0, 85, 0.2),
+                inset 0 0 25px rgba(0, 0, 0, 0.8),
+                inset 0 0 10px rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            animation: sign-flicker 4s infinite;
+            width: 100%;
+            max-width: 440px;
+            box-sizing: border-box;
+        }
 
-h1 {
-  font-family: "Great Vibes", "Brush Script MT", cursive;
-  font-weight: 400;
-  line-height: 0.95;
-}
+        /* Marco interior secundario de seguridad */
+        .signboard::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 1px dashed rgba(255, 0, 85, 0.4);
+            border-radius: 4px;
+            pointer-events: none;
+        }
 
-.nombre {
-  display: block;
-  font-size: clamp(4rem, 15vw, 6.8rem);
-  background: linear-gradient(90deg, var(--lila-oscuro), var(--rosa-fuerte));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  padding: 0 0.1em 0.08em;
-}
+        /* Tornillos industriales en las 4 esquinas */
+        .screw {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #ccc 30%, #333 70%);
+            border: 1px solid #111;
+            border-radius: 50%;
+            box-shadow: 0 0 4px rgba(0, 255, 255, 0.5);
+            z-index: 6;
+        }
+        .screw-tl { top: 10px; left: 10px; }
+        .screw-tr { top: 10px; right: 10px; }
+        .screw-bl { bottom: 10px; left: 10px; }
+        .screw-br { bottom: 10px; right: 10px; }
 
-.nombre.segundo {
-  margin-top: -0.12em;
-  padding-left: 0.9em;
-  background: linear-gradient(90deg, var(--rosa-fuerte), var(--lila-oscuro));
-  -webkit-background-clip: text;
-  background-clip: text;
-}
+        .glitch {
+            position: relative;
+            font-size: clamp(1.3rem, 3vw, 2.2rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: #fff;
+            letter-spacing: 0.05em;
+            text-align: center;
+            text-transform: uppercase;
+        }
 
-.apellidos {
-  margin-top: 14px;
-  font-size: clamp(1.2rem, 4.5vw, 1.7rem);
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  color: var(--lila-oscuro);
-}
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip: rect(0, 0, 0, 0);
+        }
 
-/* Adorno floral */
-.adorno {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin: 28px auto 22px;
-  width: 70%;
-}
-.adorno span {
-  flex: 1;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--lila), transparent);
-}
-.adorno i {
-  font-style: normal;
-  font-size: 1.6rem;
-  color: var(--rosa-fuerte);
-}
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff0055;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
 
-.frase {
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: #9a6bc9;
-}
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00ffff, 0 2px #ff0055;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
 
-/* Un solo momento de movimiento: la flor gira suavemente */
-@media (prefers-reduced-motion: no-preference) {
-  .adorno i { animation: girar 12s linear infinite; }
-  @keyframes girar { to { transform: rotate(360deg); } }
-}
+        @keyframes glitch-anim-1 {
+            0% {
+                clip: rect(24px, 9999px, 86px, 0);
+                transform: skew(0.3deg);
+            }
+            10% {
+                clip: rect(85px, 9999px, 140px, 0);
+                transform: skew(0.8deg);
+            }
+            20% {
+                clip: rect(10px, 9999px, 50px, 0);
+                transform: skew(0.1deg);
+            }
+            30% {
+                clip: rect(110px, 9999px, 130px, 0);
+                transform: skew(0.5deg);
+            }
+            40% {
+                clip: rect(40px, 9999px, 90px, 0);
+                transform: skew(0.2deg);
+            }
+            50% {
+                clip: rect(15px, 9999px, 110px, 0);
+                transform: skew(0.9deg);
+            }
+            60% {
+                clip: rect(70px, 9999px, 120px, 0);
+                transform: skew(0.4deg);
+            }
+            70% {
+                clip: rect(5px, 9999px, 60px, 0);
+                transform: skew(0.6deg);
+            }
+            80% {
+                clip: rect(95px, 9999px, 150px, 0);
+                transform: skew(0.1deg);
+            }
+            90% {
+                clip: rect(30px, 9999px, 100px, 0);
+                transform: skew(0.7deg);
+            }
+            100% {
+                clip: rect(60px, 9999px, 110px, 0);
+                transform: skew(0.3deg);
+            }
+        }
 
-@media (max-width: 480px) {
-  .tarjeta { padding: 56px 20px 44px; border-radius: 140px 140px 36px 36px; }
-  .nombre.segundo { padding-left: 0.4em; }
-}
-  </style>
+        @keyframes glitch-anim-2 {
+            0% {
+                clip: rect(10px, 9999px, 80px, 0);
+                transform: skew(0.5deg);
+            }
+            15% {
+                clip: rect(90px, 9999px, 120px, 0);
+                transform: skew(0.2deg);
+            }
+            30% {
+                clip: rect(20px, 9999px, 60px, 0);
+                transform: skew(0.8deg);
+            }
+            45% {
+                clip: rect(70px, 9999px, 140px, 0);
+                transform: skew(0.1deg);
+            }
+            60% {
+                clip: rect(40px, 9999px, 100px, 0);
+                transform: skew(0.6deg);
+            }
+            75% {
+                clip: rect(110px, 9999px, 130px, 0);
+                transform: skew(0.3deg);
+            }
+            90% {
+                clip: rect(5px, 9999px, 50px, 0);
+                transform: skew(0.9deg);
+            }
+            100% {
+                clip: rect(50px, 9999px, 90px, 0);
+                transform: skew(0.4deg);
+            }
+        }
+
+        @keyframes sign-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                border-color: rgba(0, 255, 255, 0.7);
+                box-shadow: 0 0 40px rgba(0, 255, 255, 0.3), 0 0 15px rgba(255, 0, 85, 0.25), inset 0 0 25px rgba(0, 0, 0, 0.8);
+                opacity: 1;
+            }
+            20%, 24%, 55% {
+                border-color: rgba(255, 0, 85, 0.3);
+                box-shadow: 0 0 10px rgba(255, 0, 85, 0.15), inset 0 0 15px rgba(0, 0, 0, 0.8);
+                opacity: 0.92;
+            }
+        }
+
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            ), linear-gradient(
+                90deg,
+                rgba(255, 0, 0, 0.03),
+                rgba(0, 255, 0, 0.01),
+                rgba(0, 0, 255, 0.03)
+            );
+            background-size: 100% 4px, 6px 100%;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body>
-  <div class="petalo petalo-1" aria-hidden="true"></div>
-  <div class="petalo petalo-2" aria-hidden="true"></div>
-  <div class="petalo petalo-3" aria-hidden="true"></div>
 
-  <main class="tarjeta">
-    <p class="saludo">Hola, soy</p>
-    <h1>
-      <span class="nombre">Alondra</span>
-      <span class="nombre segundo">Iridany</span>
-    </h1>
-    <p class="apellidos">Saucedo Jiménez</p>
+    <div class="scanlines"></div>
+    <canvas id="rainCanvas"></canvas>
+    
+    <div class="glitch-wrapper">
+        <div class="signboard-container">
+            <div class="signboard-mounts">
+                <div class="mount-chain"></div>
+                <div class="mount-chain"></div>
+            </div>
 
-    <div class="adorno" aria-hidden="true">
-      <span></span><i>✿</i><span></span>
+            <!-- LETRERO DE NOMBRE -->
+            <div class="signboard">
+                <div class="screw screw-tl"></div>
+                <div class="screw screw-tr"></div>
+                <div class="screw screw-bl"></div>
+                <div class="screw screw-br"></div>
+                
+                <h1 class="glitch px-4" data-text="OSLER RENÉ CASTILLO ESTRADA">
+                    OSLER RENÉ<br>CASTILLO ESTRADA
+                </h1>
+            </div>
+
+        </div>
     </div>
 
-    <p class="frase">Estudiante de desarrollo de software multiplataforma.</p>
-  </main>
+    <script>
+        // Lluvia y efectos de rayos originales
+        const canvas = document.getElementById('rainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let drops = [];
+        let splashes = [];
+        let lightnings = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Lightning {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.segments = [];
+                let currentX = this.x;
+                let currentY = 0;
+                
+                while (currentY < height * 0.7) {
+                    let nextX = currentX + (Math.random() * 60 - 30);
+                    let nextY = currentY + Math.random() * 30 + 15;
+                    this.segments.push({x1: currentX, y1: currentY, x2: nextX, y2: nextY});
+                    currentX = nextX;
+                    currentY = nextY;
+                }
+
+                this.flashAlpha = 0.6;
+                this.life = 15;
+            }
+
+            update() {
+                this.life--;
+                this.flashAlpha *= 0.85;
+            }
+
+            draw() {
+                ctx.save();
+                
+                if (this.flashAlpha > 0.01) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.globalAlpha = this.flashAlpha;
+                    ctx.fillRect(0, 0, width, height);
+                }
+
+                ctx.strokeStyle = '#ffffff';
+                ctx.shadowBlur = 25;
+                ctx.shadowColor = '#00ffff';
+                ctx.lineWidth = 2.5;
+                ctx.globalAlpha = Math.min(1, this.life / 5);
+
+                ctx.beginPath();
+                for (let seg of this.segments) {
+                    ctx.moveTo(seg.x1, seg.y1);
+                    ctx.lineTo(seg.x2, seg.y2);
+                }
+                ctx.stroke();
+
+                ctx.restore();
+            }
+        }
+
+        function manageLightning() {
+            if (lightnings.length === 0 && Math.random() < 0.008) {
+                lightnings.push(new Lightning());
+            }
+
+            for (let i = lightnings.length - 1; i >= 0; i--) {
+                lightnings[i].update();
+                lightnings[i].draw();
+                if (lightnings[i].life <= 0) {
+                    lightnings.splice(i, 1);
+                }
+            }
+        }
+
+        class Drop {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * -height - 50;
+                this.length = Math.random() * 25 + 15;
+                this.speed = Math.random() * 8 + 6;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.color = Math.random() > 0.5 ? '#00ffff' : (Math.random() > 0.5 ? '#ff0055' : '#ffffff');
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y >= height - 30) {
+                    createSplash(this.x, height - 20, this.color);
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x, this.y + this.length);
+                ctx.strokeStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.globalAlpha = 1.0;
+            }
+        }
+
+        class SplashParticle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                const angle = Math.random() * Math.PI - Math.PI; 
+                const force = Math.random() * 3 + 1;
+                this.vx = Math.cos(angle) * force;
+                this.vy = Math.sin(angle) * force - 1;
+                this.gravity = 0.2;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.03 + 0.02;
+            }
+
+            update() {
+                this.vx *= 0.98;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+
+            draw() {
+                if (this.alpha <= 0) return;
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, 2, 2);
+                ctx.restore();
+            }
+        }
+
+        function createSplash(x, y, color) {
+            const count = Math.floor(Math.random() * 4) + 3;
+            for (let i = 0; i < count; i++) {
+                splashes.push(new SplashParticle(x, y, color));
+            }
+        }
+
+        const dropCount = Math.floor(window.innerWidth / 12);
+        for (let i = 0; i < dropCount; i++) {
+            drops.push(new Drop());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            manageLightning();
+
+            for (let i = 0; i < drops.length; i++) {
+                drops[i].update();
+                drops[i].draw();
+            }
+
+            for (let i = splashes.length - 1; i >= 0; i--) {
+                splashes[i].update();
+                splashes[i].draw();
+                if (splashes[i].alpha <= 0) {
+                    splashes.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
 </body>
 </html>
